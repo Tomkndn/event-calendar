@@ -10,6 +10,9 @@ import { Pencil, Trash2, ChevronLeft, ChevronRight, Calendar as CalendarIcon, Pl
 import { cn } from '@/lib/utils'
 import { Textarea } from './ui/textarea'
 import { env } from '@/env'
+import { supabase } from '@/lib/supabase'
+import Redirect from './Redirect'
+import Loading from './Loading'
 
 type Event = {
   id: string
@@ -25,22 +28,36 @@ export function CalendarComponent() {
 
   useEffect(() => {
     async function getEvents() {
-      setLoading(true)
-      const headers = { 'Authorization': `Bearer ${token}` }
-      const res = await fetch(`${env.VITE_BACKEND_HOST_URL}/api/events/`, { headers })
-      if (res.ok && !ignore) {
-        const fetch = await res.json()
-        console.log(fetch)
-        setEvents(fetch)
-        setLoading(false)
+      setLoading(true);
+      try {
+        const { data: user } = await supabase.auth.getUser();
+        if (!user) {
+          console.error("User not authenticated");
+          setLoading(false);
+          return;
+        }
+        console.log("User:", user);
+
+        const { data, error } = await supabase
+          .from("events") 
+          .select("*")
+          .eq("user_id", user?.user?.id); 
+
+        if (error) {
+          console.error("Error fetching events:", error);
+        } else {
+          console.log("Fetched events:", data);
+          setEvents(data); 
+        }
+      } catch (err) {
+        console.error("Unexpected error:", err);
+      } finally {
+        setLoading(false);
       }
     }
 
-    let ignore = false
+
     getEvents()
-    return () => {
-      ignore = true
-    }
   }, [token])
 
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -69,21 +86,41 @@ export function CalendarComponent() {
     setSelectedDate(today)
   }
 
-  const saveEvent = async (eventobj: Omit<Event, 'id'>) => {
-    const res = await fetch(`${env.VITE_BACKEND_HOST_URL}/api/events/`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(eventobj),
-    })
+  // const saveEvent = async (eventobj: Omit<Event, 'id'>) => {
+  //   const res = await fetch(`${env.VITE_BACKEND_HOST_URL}/api/events/`, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       'Authorization': `Bearer ${token}`
+  //     },
+  //     body: JSON.stringify(eventobj),
+  //   })
 
-    if (res.ok) {
-      const savedEvent = await res.json()
-      setEvents(prevEvents => [...prevEvents, savedEvent])
+  //   if (res.ok) {
+  //     const savedEvent = await res.json()
+  //     setEvents(prevEvents => [...prevEvents, savedEvent])
+  //   }
+  // }
+
+  const saveEvent = async (eventObj: Omit<Event, "id">) => {
+    try {
+      const { data: user } = await supabase.auth.getUser();
+      const { data, error } = await supabase
+        .from("events") 
+        .insert([{ ...eventObj, user_id: user?.user?.id }]);
+
+      if (error) {
+        console.error("Error in saving event:", error.message);
+      } else {
+        console.log("Event saved:", data);
+        if (data) {
+          setEvents((prevEvents) => [...prevEvents, ...data]);
+        }
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
     }
-  }
+  };
 
   const handleAddEvent = (e: React.FormEvent) => {
     e.preventDefault()
@@ -122,20 +159,40 @@ export function CalendarComponent() {
     }
   }
 
-  const handleDeleteEvent = async (id: string) => {
-    const res = await fetch(`${env.VITE_BACKEND_HOST_URL}/api/events/${id}/`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${token}`
-      },
-    })
+  // const handleDeleteEvent = async (id: string) => {
+  //   const res = await fetch(`${env.VITE_BACKEND_HOST_URL}/api/events/${id}/`, {
+  //     method: 'DELETE',
+  //     headers: {
+  //       'Authorization': `Bearer ${token}`
+  //     },
+  //   })
 
-    if (res.ok) {
-      setEvents(prevEvents => prevEvents.filter(event => event.id !== id))
-    } else {
-      console.error('Error in deleting')
+  //   if (res.ok) {
+  //     setEvents(prevEvents => prevEvents.filter(event => event.id !== id))
+  //   } else {
+  //     console.error('Error in deleting')
+  //   }
+  // }
+
+  const handleDeleteEvent = async (id: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("events")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        console.error("Error in deleting event:", error.message);
+      } else {
+        console.log("Event deleted:", data);
+        setEvents((prevEvents) =>
+          prevEvents.filter((event) => event.id !== id)
+        );
+      }
+    } catch (err) {
+      console.error("Unexpected error:", err);
     }
-  }
+  };
 
   const renderHeader = () => {
     const dateFormat = view === 'month' ? 'MMMM yyyy' : 'MMM dd, yyyy'
@@ -319,8 +376,8 @@ export function CalendarComponent() {
     )
   }
 
-  if (token as string === '') return <main>Sign in first!</main>
-  if (loading) return <main>Loading...</main>
+  if (token as string === '') return <Redirect />
+  if (loading) return <Loading />
 
   return (
     <div className="w-full max-w-7xl flex max-lg:flex-wrap-reverse mx-auto px-4">

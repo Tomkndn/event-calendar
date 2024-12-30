@@ -1,9 +1,9 @@
 export type Credentials = {
-  username: string;
+  email: string;
   password: string;
 }
 
 export type JWTRes = {
-  access: string;
-  refresh: string;
+  access_token: string;
+  refresh_token: string;
 }
