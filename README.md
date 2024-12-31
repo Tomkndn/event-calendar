@@ -16,8 +16,8 @@ A web app implementation of an event calendar app.
 - Clone this project to your local machine using `git`
 
   ```bash
-  git clone https://github.com/tomkndn/calendar-assignment/
-  cd calendar-assignment
+  git clone https://github.com/tomkndn/event-calendar/
+  cd event-calendar
   ```
 - Set up the backend by configuring Supabase:
 
@@ -39,4 +39,4 @@ A web app implementation of an event calendar app.
 
 - The app will be available at `http://localhost:3000`.
 
-Demo: [Live URL]()
+Demo: [Live URL](https://event-calender-tomkndn.netlify.app/)
