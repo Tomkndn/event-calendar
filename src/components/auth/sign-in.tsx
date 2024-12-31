@@ -13,6 +13,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { Credentials, JWTRes } from "./types"
 import { useState } from "react"
 import { supabase } from "@/lib/supabase"
+import {env} from "@/env"
 
 export function SigninForm() {
   const [email, setEmail] = useState<string>('')
@@ -22,17 +23,18 @@ export function SigninForm() {
 
   const navigate = useNavigate()
 
-  const handleSignIn = async () => {
+  const handleSignIn = async (guest:boolean=false) => {
     setLoading(true);
     try {
+
       const credentials: Credentials = {
         email: email,
         password: password,
       };
 
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: credentials.email,
-        password: credentials.password,
+        email: guest ? env.VITE_GUEST_EMAIL : credentials.email,
+        password: guest? env.VITE_GUEST_PASSWORD : credentials.password,
       });
 
       if (error) {
@@ -95,7 +97,7 @@ export function SigninForm() {
             />
           </div>
           <Button
-            onClick={handleSignIn}
+            onClick={()=>handleSignIn()}
             className="w-full flex items-center justify-center py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
             disabled={loading}
           >
@@ -104,6 +106,13 @@ export function SigninForm() {
             ) : (
               "Sign In"
             )}
+          </Button>
+          <Button
+            onClick={()=>handleSignIn(true)}
+            className="w-full flex items-center justify-center py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200"
+            disabled={loading}
+          >
+              Sign In with guest
           </Button>
           {error && (
             <div className="text-red-500 text-center mt-2">{error}</div>
