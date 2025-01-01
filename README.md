@@ -10,10 +10,7 @@ A web app implementation of an event calendar app.
 
 You can watch a demo of the app here:
 
-<video controls>
-  <source src="https://res.cloudinary.com/dkmiauica/video/upload/f_auto:video,q_auto/event-calendar-demo" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+[Watch the Event Calendar Demo](https://res.cloudinary.com/dkmiauica/video/upload/f_auto:video,q_auto/event-calendar-demo)
 
 ### Features:
 - Frontend written in Reactjs (Vite) compatible with a Supabase backend
@@ -42,13 +39,13 @@ You can watch a demo of the app here:
 - Install the required packages for frontend:
 
   ```bash
-  bun/npm install
+  bun install
   ```
 
 - Start the React frontend:
 
   ```bash
-  bun/npm run dev
+  bun run dev
   ```
 
 - The app will be available at `http://localhost:3000`.
