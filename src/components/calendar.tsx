@@ -10,8 +10,8 @@ import { Pencil, Trash2, ChevronLeft, ChevronRight, Calendar as CalendarIcon, Pl
 import { cn } from '@/lib/utils'
 import { Textarea } from './ui/textarea'
 import { supabase } from '@/lib/supabase'
-import Redirect from './Redirect'
-import Loading from './Loading'
+import Redirect from './utils/Redirect'
+import Loading from './utils/Loading'
 
 type Event = {
   id: string

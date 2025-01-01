@@ -56,19 +56,18 @@ export function SignupForm() {
     }
   };
 
-
   return (
-    <Card className="w-full max-w-md shadow-lg rounded-lg bg-white p-6">
+    <Card className="w-full max-w-sm sm:max-w-md shadow-lg rounded-lg bg-white p-4 sm:p-6">
       <CardHeader>
-        <CardTitle className="text-3xl font-semibold text-gray-800">
+        <CardTitle className="text-2xl sm:text-3xl font-semibold text-center text-gray-800">
           Sign Up
         </CardTitle>
-        <CardDescription className="text-gray-600 text-sm">
+        <CardDescription className="text-gray-600 text-sm text-center">
           Enter your credentials below to sign up.
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-6">
-        <div className="grid gap-6">
+      <CardContent className="grid gap-4 sm:gap-6">
+        <div className="grid gap-4 sm:gap-6">
           <div className="grid gap-2">
             <Label htmlFor="email" className="text-gray-700">
               Email
@@ -80,7 +79,7 @@ export function SignupForm() {
               placeholder="John@gmail.com"
               required
               onChange={(e) => setEmail(e.target.value)}
-              className="border-2 border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div className="grid gap-2">
@@ -94,7 +93,7 @@ export function SignupForm() {
               required
               placeholder="*******"
               onChange={(e) => setPassword(e.target.value)}
-              className="border-2 border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500"
             />
           </div>
           <div className="grid gap-2">
@@ -102,17 +101,17 @@ export function SignupForm() {
               Confirm Password
             </Label>
             <Input
-              className={
-                (confPassword !== password &&
-                  "text-red-500 border-red-500 outline-red-500") ||
-                "border-2 border-gray-300 p-3 rounded-md focus:ring-2 focus:ring-blue-500"
-              }
               id="password-conf"
               name="password-conf"
               type="password"
               required
               onChange={(e) => setConfPassword(e.target.value)}
               placeholder="*******"
+              className={`border p-3 rounded-md focus:ring-2 ${
+                confPassword !== password
+                  ? "border-red-500 focus:ring-red-500"
+                  : "border-gray-300 focus:ring-blue-500"
+              }`}
             />
           </div>
           <Button
