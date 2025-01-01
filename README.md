@@ -2,6 +2,19 @@
 
 A web app implementation of an event calendar app.
 
+### Demo
+
+- Live Demo: [Click here](https://event-calender-tomkndn.netlify.app/)
+
+### Demo Video
+
+You can watch a demo of the app here:
+
+<video controls>
+  <source src="https://res.cloudinary.com/dkmiauica/video/upload/f_auto:video,q_auto/event-calendar-demo" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
 ### Features:
 - Frontend written in Reactjs (Vite) compatible with a Supabase backend
 - Basic user authentication with JWT
@@ -19,6 +32,7 @@ A web app implementation of an event calendar app.
   git clone https://github.com/tomkndn/event-calendar/
   cd event-calendar
   ```
+
 - Set up the backend by configuring Supabase:
 
   1. Create a new project on [Supabase](https://supabase.com/).
@@ -38,5 +52,3 @@ A web app implementation of an event calendar app.
   ```
 
 - The app will be available at `http://localhost:3000`.
-
-Demo: [Live URL](https://event-calender-tomkndn.netlify.app/)
